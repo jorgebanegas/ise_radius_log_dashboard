@@ -1,4 +1,4 @@
-# GVE_DevNet_app_template
+# GVE_DevNet_ISE_RADIUS_LOG_DASHBOARD
 prototype web app that displays the users that have authenticated to the ISE network and are grouped by Active Directory membership 
 
 ## Contacts
