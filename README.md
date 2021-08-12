@@ -7,8 +7,7 @@ prototype web app that displays the users that have authenticated to the ISE net
 ## Solution Components
 * flask
 * python
-* HTML
-* Javascript
+* Mongo DB
 * Cisco ISE
 * Active Directory integration with ISE
 * Google Chrome Browser
@@ -38,17 +37,43 @@ In the CLI:
     ```
     For Github link: 
         In Github, click on the **Clone or download** button in the upper part of the page > click the **copy icon**
-        ![/static/images/giturl.png](/static/images/giturl.png)
 
-4. Access the folder **GVE_DevNet_app_template**
-    ```python
-    cd GVE_DevNet_app_template
-    ```
-
-5.	Install dependencies
+4. Access the root folder of the project
+5. Open up Google Chrome, and vist the login page for ISE while having the inspect tool open in the Network tab
+    ![/static/images/ise_login.png](/images/ise_login.png)
+7. Expand the LoginAction.do 
+8. Copy the source text of the Request Header and paste it in between """ """ in line 61 in  the populate.py file
+    ![/static/images/payload.png](/images/ui_auth.png)
+10. Copy the source text of the Form Data and paste it in between the quotes on the line payload = create_json("""""") in  the populate.py file
+     ![/static/images/ui_auth.png](/images/payload.png)
+12. Vist the Operations tab -> Live logs while have the inspect tool open in the  Network tab
+13. Expand authLiveLog 
+14. Copy the source text of the Request Header and paste it in between """ """ in line 61 in  the populate.py file
+    ![/static/images/ui_auth.png](/images/live_log_payload.png)
+16. Open up the config.py file and enter ISE environment info and the two AD groups to track
+ ```python
+    hostname =""
+    username = ""
+    password = ""
+    student_group = ""
+    faculty_group = ""
+  ```
+14.	Install dependencies
     ```python
     pip install -r requirements.txt
     ```
+ 15. You can chance the ip address if needed 
+ 
+   ![/images/ip.png](/images/ip.png)
+    
+ 18. Now you can launch the web application
+```python
+    python app.py
+  ```
+### Screenshots
+
+![/images/screenshot.png](/images/screenshot.png)
+
 ### LICENSE
 
 Provided under Cisco Sample Code License, for details see [LICENSE](LICENSE.md)
