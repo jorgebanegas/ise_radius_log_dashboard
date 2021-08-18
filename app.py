@@ -85,15 +85,18 @@ def ise():
                 temp2 = {}
                 temp2["time"] = i['time']
                 temp2["user"] = i['username']
-                temp2["ad"] = i['adgroup']
+                temp2["date"] = i['date']
 
                 if config.faculty_group in i['adgroup']:
+                    temp2["ad"] = "Faculty"
                     payload["count"][1] += 1
                     date = datetime.datetime.strptime(i['date'], "%Y-%d-%m").strftime("%Y-%m-%d")
                     payload["faculty_data"].append(date)
                     payload['data'].append(temp2)
 
+
                 if config.student_group in i['adgroup']:
+                    temp2["ad"] = "Student"
                     payload["count"][0] += 1
                     date = datetime.datetime.strptime(i['date'], "%Y-%d-%m").strftime("%Y-%m-%d")
                     payload["student_data"].append(date)

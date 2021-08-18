@@ -1,0 +1,226 @@
+<!--Charts: Overview of pie chart UI components-->
+
+{% extends "masterPage.html" %}
+
+{% block title %}
+<span>ISE Client Report Page</span>
+{% endblock %}
+
+{% block content %}
+<script type="text/javascript">
+    function downloadCSV(csv, filename) {
+        var csvFile;
+        var downloadLink;
+        // CSV file
+        csvFile = new Blob([csv], { type: "text/csv" });
+        // Download link
+        downloadLink = document.createElement("a");
+        // File name
+        downloadLink.download = filename;
+        // Create a link to the file
+        downloadLink.href = window.URL.createObjectURL(csvFile);
+        // Hide download link
+        downloadLink.style.display = "none";
+        // Add the link to DOM
+        document.body.appendChild(downloadLink);
+        // Click download link
+        downloadLink.click();
+    }
+
+    function exportTableToCSV(filename) {
+        var csv = [];
+        var rows = document.getElementById("myTable").querySelectorAll("table tr");
+
+        for (var i = 0; i < rows.length; i++) {
+            var row = [], cols = rows[i].querySelectorAll("td, th");
+
+            for (var j = 0; j < cols.length; j++)
+                row.push(cols[j].innerText);
+
+            csv.push(row.join(","));
+        }
+        // Download CSV file
+        downloadCSV(csv.join("\n"), filename);
+    }
+
+
+</script>
+
+<script type="text/javascript">
+    $(function() {
+      $('input[name="daterange"]').daterangepicker({
+        opens: 'left'
+      }, function(start, end, label) {
+        
+        console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+        $.ajax({
+                data : {
+                    start : start.format('YYYY-MM-DD'),
+                    end : end.format('YYYY-MM-DD')
+                },
+                type : 'POST',
+                url : '/ise',
+                dataType: 'json',
+                traditional: true,
+                success: function (data) {
+                    var entries = data.data
+                    var table = document.getElementById('myTable')
+                    $("#myTable").empty()
+
+                    for (var i = 0; i < entries.length; i++){
+                        var row =  `<tr>
+                                        <td>${entries[i].date}</td>
+                                        <td>${entries[i].time}</td>
+                                        <td>${entries[i].user}</td>
+                                        <td>${entries[i].ad}</td>
+                                    </tr>`
+
+                        table.innerHTML  += row
+                    }
+
+                    // generating pie chart for AD group Distribution
+                    var ctx3 = document.getElementById('myChart3').getContext('2d');
+                    var myChart3 = new Chart(ctx3, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Students', 'Faculty/Staff'],
+                            datasets: [{
+                                label: 'devices',
+                                data: data.count,
+                                backgroundColor: [
+                                    'rgba(255, 99, 132, 0.2)',
+                                    'rgba(54, 162, 235, 0.2)',
+                                ],
+                                borderColor: [
+                                    'rgba(255, 99, 132, 1)',
+                                    'rgba(54, 162, 235, 1)',
+                                ],
+                                borderWidth: 1,
+                                fill:false,
+                            }]
+                        },
+                        options: {
+                            title: {
+                            display: true,
+                            text: 'AD Group Distribution'
+                            }
+                        }
+                    });
+
+                    // generating line chart for students
+                    var ctx1 = document.getElementById('myChart1').getContext('2d');
+                    var myChart1 = new Chart(ctx1, {
+                    type: 'line',
+                    data: {
+                        datasets: [{
+                        label: "Students",
+                        data: data.student_data,
+                        borderColor: 'rgb(255, 99, 132, 0.2)',
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        pointBackgroundColor : 'rgb(255, 99, 132, 0.2)',
+                        }],
+                    },
+                    options: {
+                        scales: {
+                        xAxes: [{
+                            ticks: {
+                            autoSkip: false,
+                            maxRotation: 90,
+                            minRotation: 90
+                        },
+                            type: 'time',
+                            time: {
+                            unit: 'day'
+                            }
+                        }]
+                        }
+                    }
+                    });
+
+
+                    // generating line chart for faculty
+                    var ctx2 = document.getElementById('myChart2').getContext('2d');
+                    var myChart2 = new Chart(ctx2, {
+                    type: 'line',
+                    data: {
+                        datasets: [{
+                        label: "Faculty",
+                        data: data.faculty_data,
+                        borderColor: 'rgb(54, 162, 235, 0.2)',
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        pointBackgroundColor : 'rgb(54, 162, 235, 0.2)',
+                        }]
+                    },
+                    options: {
+                        scales: {
+                        xAxes: [{
+                            ticks: {
+                            autoSkip: false,
+                            maxRotation: 90,
+                            minRotation: 90
+                        },
+                            type: 'time',
+                            time: {
+                            unit: 'day'
+                            }
+                        }]
+                        }
+                    }
+                    });
+
+            }});
+        })
+    });
+</script>
+    <!-- Sidebar -->
+     <!-- Left Rail -->
+     <div class="container-fluid">
+     {% include "menu.html" %}
+
+    <div id="content" class="col-10">
+        <br>
+        <div id="section" class="container-fluid">
+            <div class="header-panel header-panel--right hidden-md-down">
+                <button class="btn btn--primary" onclick="exportTableToCSV('clientInfo.csv')">Generate Radius Authentication Report</button>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="panel panel--loose panel--raised base-margin-bottom" height="500">
+                        <h2 style="text-align:center" class="subtitle">Successful Radius Events</h2>
+                        <div class ="row">
+                            <div class="col-md-4" style="overflow-y: scroll; height:400px;">
+                                <input type="text" name="daterange" value={{date_range}} />
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                        <th scope="col" style="text-align:center">Date</th>
+                                        <th scope="col" style="text-align:center">Time</th>
+                                        <th scope="col" style="text-align:center">User</th>
+                                        <th scope="col" style="text-align:center">AD Group</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="myTable">
+                                    </tbody>
+                                </table>
+                            </div>
+                                <div class="col-md-4">
+                                    <canvas id="myChart1" width="400" height="400"></canvas>
+                                </div>
+                                <div class="col-md-4">
+                                    <canvas id="myChart2" width="400" height="400"></canvas>
+                                </div>
+                                <div class="col-md-4"></div>
+                                <div class="col-md-4">
+                                    <canvas id="myChart3"></canvas>
+                                </div>
+                                <div class="col-md-4"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div> 
+{% endblock %}
