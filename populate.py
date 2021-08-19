@@ -113,7 +113,7 @@ def collect():
 
             date = str(datetime_time).split(" ")[0]
             time = str(datetime_time).split(" ")[1]
-        except Exception as e: 
+        except Exception as str(e): 
             print("Error: " + e)
             print("Error parsing start time : ",str(radius_log))
             continue
