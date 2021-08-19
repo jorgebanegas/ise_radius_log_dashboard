@@ -108,9 +108,12 @@ def collect():
     pprint.pprint(radius_logs)
     
     for radius_log in radius_logs:
-        date = datetime.strptime(radius_log["session_start_time"], '%Y-%d-%m')
-        time = radius_log["time"].split(' ')[3:5]
-        time = str(time[0]) + " " + str(time[1])
+        try:
+            date = datetime.strptime(str(radius_log["session_start_time"]), '%Y-%d-%m')
+            time = radius_log["time"].split(' ')[3:5]
+            time = str(time[0]) + " " + str(time[1])
+        except:
+            print("Error parsing start time : ",str(radius_log["session_start_time"]))
         if radius_log["username"] not in temp:
             data  = {"username":radius_log["username"],"adgroup":radius_log["adUserResolvedDns"],"date":str(date).split(" ")[0],"time":time}
             collection.insert_one(data)
