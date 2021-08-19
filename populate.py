@@ -113,9 +113,9 @@ def collect():
 
             date = str(datetime_time).split(" ")[0]
             time = str(datetime_time).split(" ")[1]
-        except Exception as str(e): 
-            print("Error: " + e)
-            print("Error parsing start time : ",str(radius_log))
+        except Exception as e: 
+            print("Error: " + str(e))
+            print("Radius Log causing error : ",str(radius_log))
             continue
 
         if radius_log["username"] not in temp:
