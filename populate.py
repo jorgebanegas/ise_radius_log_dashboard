@@ -105,7 +105,7 @@ def collect():
     for x in mydoc:
         temp.append(x.get("username"))
     
-    pprint.pprint(radius_logs)
+    #pprint.pprint(radius_logs)
     
     for radius_log in radius_logs:
         try:
@@ -113,7 +113,8 @@ def collect():
 
             date = str(datetime_time).split(" ")[0]
             time = str(datetime_time).split(" ")[1]
-        except:
+        except Exception as e: 
+            print("Error: " + e)
             print("Error parsing start time : ",str(radius_log))
             continue
 
