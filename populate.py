@@ -112,6 +112,8 @@ def collect():
         try:
             datetime_time = datetime.fromtimestamp(radius_log["session_start_time"]/1000)
             date = str(datetime_time).split(" ")[0]
+            date = datetime.strptime(date, "%Y-%m-%d").strftime("%Y-%d-%m")
+           
             time = str(datetime_time).split(" ")[1]
         except Exception as e: 
             print("Error: " + e)
