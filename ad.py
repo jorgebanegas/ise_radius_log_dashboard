@@ -48,10 +48,3 @@ def get_ad_groups(ad_id,username):
     results = response["ERSActiveDirectoryGroups"]["groups"]
 
     return results
-
-
-
-ads = get_active_directories()[0]
-groups = get_ad_groups(ads["id"],"jbanegas")
-
-print(groups)
