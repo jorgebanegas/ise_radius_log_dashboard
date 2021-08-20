@@ -2,6 +2,7 @@ from base64 import b64encode
 import requests
 import json
 import config
+import pprint
 
 #Build the Headers for the API Calls to ISE
 def build_headers():
@@ -43,6 +44,14 @@ def get_ad_groups(ad_id,username):
 
     response = requests.request("PUT", url, data=json.dumps(payload), headers=headers, verify=False)
     response = json.loads(response.text.encode("utf8"))
+    pprint.pprint(response)
     results = response["ERSActiveDirectoryGroups"]["groups"]
 
     return results
+
+
+
+ads = get_active_directories()[0]
+groups = get_ad_groups(ads["id"],"jbanegas")
+
+print(groups)
