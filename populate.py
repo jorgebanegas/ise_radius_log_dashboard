@@ -21,6 +21,7 @@ from requests.auth import HTTPBasicAuth
 from pymongo import MongoClient
 from datetime import datetime
 from apscheduler.schedulers.blocking import BlockingScheduler
+import ad
 
 client = MongoClient()
 db = client['logs']
@@ -105,23 +106,25 @@ def collect():
     for x in mydoc:
         temp.append(x.get("username"))
     
-    #pprint.pprint(radius_logs)
+    pprint.pprint(radius_logs)
     
     for radius_log in radius_logs:
         try:
-            datetime_time = datetime.fromtimestamp(radius_log["session_start_time"])
-
+            datetime_time = datetime.fromtimestamp(radius_log["session_start_time"]/1000)
             date = str(datetime_time).split(" ")[0]
             time = str(datetime_time).split(" ")[1]
         except Exception as e: 
-            print("Error: " + str(e))
-            print("Radius Log causing error : ",str(radius_log))
+            print("Error: " + e)
+            print("Error parsing start time : ",str(radius_log))
             continue
-
         if radius_log["username"] not in temp:
-            data  = {"username":radius_log["username"],"adgroup":radius_log["adUserResolvedDns"],"date":date,"time":time}
+            ads = ad.get_active_directories()
+            #pprint.pprint(ads)
+            ads = ads[0]
+            groups = ad.get_ad_groups(ads["id"],radius_log["username"])
+            data  = {"username":radius_log["username"],"adgroup":groups,"date":date,"time":time}
             collection.insert_one(data)
-            print("Username : ",radius_log["username"]," AD Group : ",radius_log["adUserResolvedDns"]," Date : ",date)
+            print("Username : ",radius_log["username"]," AD Group : ",str(groups)," Date : ",date)
 
 
 scheduler = BlockingScheduler()
