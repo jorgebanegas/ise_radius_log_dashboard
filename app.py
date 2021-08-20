@@ -86,8 +86,8 @@ def ise():
                 temp2["time"] = i['time']
                 temp2["user"] = i['username']
                 temp2["date"] = i['date']
-
-                if config.faculty_group in i['adgroup']:
+           
+                if config.faculty_sid in str(i['adgroup']):
                     temp2["ad"] = "Faculty"
                     payload["count"][1] += 1
                     date = datetime.datetime.strptime(i['date'], "%Y-%d-%m").strftime("%Y-%m-%d")
@@ -95,13 +95,16 @@ def ise():
                     payload['data'].append(temp2)
 
 
-                if config.student_group in i['adgroup']:
+                if config.student_sid in str(i['adgroup']):
                     temp2["ad"] = "Student"
                     payload["count"][0] += 1
                     date = datetime.datetime.strptime(i['date'], "%Y-%d-%m").strftime("%Y-%m-%d")
                     payload["student_data"].append(date)
                     payload['data'].append(temp2)
-            
+
+                if config.faculty_sid in str(i['adgroup']) and config.student_sid in str(i['adgroup']):
+                    temp2["ad"] = "Faculty/Student"
+           
             payload["student_data"] = list(Counter(payload["student_data"]).items())
             payload["faculty_data"] = list(Counter(payload["faculty_data"]).items())
             list_students = []
