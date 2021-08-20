@@ -122,6 +122,8 @@ def collect():
             #pprint.pprint(ads)
             ads = ads[0]
             groups = ad.get_ad_groups(ads["id"],radius_log["username"])
+            if groups == None:
+                continue
             data  = {"username":radius_log["username"],"adgroup":groups,"date":date,"time":time}
             collection.insert_one(data)
             print("Username : ",radius_log["username"]," AD Group : ",str(groups)," Date : ",date)

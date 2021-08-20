@@ -45,6 +45,9 @@ def get_ad_groups(ad_id,username):
     response = requests.request("PUT", url, data=json.dumps(payload), headers=headers, verify=False)
     response = json.loads(response.text.encode("utf8"))
     pprint.pprint(response)
-    results = response["ERSActiveDirectoryGroups"]["groups"]
-
+    try:
+        results = response["ERSActiveDirectoryGroups"]["groups"]
+    except:
+        print("Username: ",username, " cannot be found")
+        return None
     return results
