@@ -65,7 +65,6 @@ class ISE:
         payload = create_json("""""")
         login_url = "https://%s/admin/LoginAction.do" % self.host
         request = requests.session()
-        request.keep_alive = False
         response = request.post(url=login_url, data=payload, verify=False, headers=headers)
         print(request.cookies.get_dict())
 
