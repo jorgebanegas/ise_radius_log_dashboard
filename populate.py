@@ -82,6 +82,7 @@ class ISE:
         url = "https://%s/admin/rs/uiapi/mnt/livesession"%(self.host)
         response = self.__session.get(url, auth=HTTPBasicAuth(self.__username, self.__password),headers=headers,verify=False)
         self.__session.close()
+        response.close()
         if response.status_code == 200:
             return json.loads(response.content)
         else:
