@@ -12,9 +12,13 @@ or implied.
 """
 
 hostname =""
-username = ""
-password = ""
+
+
 student_sid = ""
 faculty_sid = ""
+
 api_user = ""
 api_password = ""
+
+pxgrid_user = ""
+pxgrid_secret = ""
